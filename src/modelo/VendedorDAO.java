@@ -4,6 +4,7 @@ package modelo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,12 +50,14 @@ public class VendedorDAO {
         return ev;
     }
     
+    //Code Smell:concatenación de cadenas en una consulta SQL
      public Vendedor listarVendedorId(String dni) {
         Vendedor v=new Vendedor();
-        String sql = "select * from vendedor where Dni=" + dni;
+        String sql = "select * from vendedor where Dni=?";
         try {
             con = acceso.Conectar();
             ps = con.prepareStatement(sql);
+            ps.setString(1, dni);
             rs = ps.executeQuery();
             while (rs.next()) {
                 v.setId(rs.getInt(1));
@@ -64,6 +67,8 @@ public class VendedorDAO {
                 v.setEstado(rs.getString(5));
                 v.setUser(rs.getString(6));
             }
+            
+           //Code Smell:Uso incorrecto de excepciones genéricas
         } catch (Exception e) {
         }
         return v;

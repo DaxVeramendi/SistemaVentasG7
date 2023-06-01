@@ -1,3 +1,6 @@
 
 src/modelo/Conexion.java
 *.class
+/nbproject/private/
+/dist/
+/build/
