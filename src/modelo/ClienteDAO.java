@@ -71,39 +71,37 @@ public class ClienteDAO implements CRUD {
     }
 
     @Override
-    public int add(Object[] o) {  
-        int r=0;
-        String sql = "insert into cliente(Dni,Nombres,Direccion,Estado)values(?,?,?,?)";
-        try {
-            con=cn.Conectar();
-            ps=con.prepareStatement(sql);
-            ps.setObject(1, o[0]);
-            ps.setObject(2, o[1]);
-            ps.setObject(3, o[2]);
-            ps.setObject(4, o[3]);
-            r=ps.executeUpdate();
-        } catch (Exception e) {
-        }
-        return r;
+    public int add(Cliente cliente) {
+    int r = 0;
+    String sql = "INSERT INTO cliente(Dni, Nombres, Direccion, Estado) VALUES (?, ?, ?, ?)";
+    try (Connection con = cn.Conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, cliente.getDni());
+        ps.setString(2, cliente.getNom());
+        ps.setString(3, cliente.getDir());
+        ps.setString(4, cliente.getEstado());
+        r = ps.executeUpdate();
+    } catch (Exception e) {
     }
+    return r;
+}
 
-    @Override
-    public int actualizar(Object[] o) {
-        int r=0;
-       String sql="update cliente set Dni=?,Nombres=?,Direccion=?,Estado=? where IdCliente=?";
-        try {
-            con=cn.Conectar();
-            ps=con.prepareStatement(sql);
-            ps.setObject(1, o[0]);
-            ps.setObject(2, o[1]);
-            ps.setObject(3, o[2]);
-            ps.setObject(4, o[3]);
-            ps.setObject(5, o[4]);
-            r=ps.executeUpdate();
-        } catch (Exception e) {
-        }
-        return r;
+public int actualizar(Cliente cliente) {
+    int r = 0;
+    String sql = "UPDATE cliente SET Dni=?, Nombres=?, Direccion=?, Estado=? WHERE IdCliente=?";
+    try (Connection con = cn.Conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, cliente.getDni());
+        ps.setString(2, cliente.getNom());
+        ps.setString(3, cliente.getDir());
+        ps.setString(4, cliente.getEstado());
+        ps.setInt(5, cliente.getId());
+        r = ps.executeUpdate();
+    } catch (Exception e) {
     }
+    return r;
+}
+
 
     @Override
     public void eliminar(int id) {
