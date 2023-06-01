@@ -14,27 +14,41 @@ public class VendedorDAO {
     Conexion acceso=new Conexion();
     Connection con;
     
-    public EntidadVendedor ValidarVendedor(String dni,String user){
-        EntidadVendedor ev=new EntidadVendedor();
-        String sql="select * from vendedor where Dni=? and User=?";
+    
+    //Code Smell: Long Method; Técnica de Refactorización: Extract Method
+    //A "ValidarVendedor" se le extrajo 1 método siendo este: "obtenerDatosVendedor"
+    public EntidadVendedor ValidarVendedor(String dni, String user) {
+        EntidadVendedor ev = new EntidadVendedor();
+        String sql = "select * from vendedor where Dni=? and User=?";
+
         try {
-           con=acceso.Conectar();
-           ps=con.prepareStatement(sql);
-           ps.setString(1, dni);
-           ps.setString(2, user);
-           rs=ps.executeQuery();
-            while (rs.next()) {
-                ev.setId(rs.getInt(1));
-                ev.setDni(rs.getString(2));
-                ev.setNom(rs.getString(3));
-                ev.setTel(rs.getString(4));
-                ev.setEstado(rs.getString(5));
-                ev.setUser(rs.getString(6));
-            }
+            con = acceso.Conectar();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, dni);
+            ps.setString(2, user);
+            rs = ps.executeQuery();
+            ev = obtenerDatosVendedor(rs);
         } catch (Exception e) {
         }
+
         return ev;
     }
+    //Método extraído desde "ValidarVendedor"
+    private EntidadVendedor obtenerDatosVendedor(ResultSet rs) throws SQLException {
+        EntidadVendedor ev = new EntidadVendedor();
+
+        while (rs.next()) {
+            ev.setId(rs.getInt(1));
+            ev.setDni(rs.getString(2));
+            ev.setNom(rs.getString(3));
+            ev.setTel(rs.getString(4));
+            ev.setEstado(rs.getString(5));
+            ev.setUser(rs.getString(6));
+        }
+
+        return ev;
+    }
+    
      public Vendedor listarVendedorId(String dni) {
         Vendedor v=new Vendedor();
         String sql = "select * from vendedor where Dni=" + dni;
